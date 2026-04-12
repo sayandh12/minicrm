@@ -58,7 +58,7 @@ class Settings(BaseSettings):
         return self
 
     # Security
-    SECRET_KEY: str
+    SECRET_KEY: str = "not-so-secret-key-change-me-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
