@@ -27,7 +27,12 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_database_urls(self) -> "Settings":
         import sys
-        # 1. Initialize and prioritize URL variables
+        # 1. Debug: Print what we can see in the environment
+        import os
+        db_keys = [k for k in os.environ.keys() if "DATABASE" in k.upper() or "PG" in k.upper()]
+        print(f"DEBUG: Detected environment variables: {db_keys}", file=sys.stderr)
+
+        # 2. Initialize and prioritize URL variables
         url = self.DATABASE_URL.strip() if self.DATABASE_URL else ""
         
         # Fallback sequence
