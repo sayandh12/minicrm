@@ -11,39 +11,44 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # Database
-    DATABASE_URL: str
+    DATABASE_URL: str = ""
     SYNC_DATABASE_URL: str = ""
 
-    @field_validator("DATABASE_URL", mode="before")
-    @classmethod
-    def assemble_db_url(cls, v: str) -> str:
-        if isinstance(v, str):
-            v = v.strip()
-            if v.startswith("postgres://"):
-                return v.replace("postgres://", "postgresql+asyncpg://", 1)
-            if v.startswith("postgresql://") and "+asyncpg" not in v:
-                return v.replace("postgresql://", "postgresql+asyncpg://", 1)
-        return v
+    @model_validator(mode="after")
+    def validate_database_urls(self) -> "Settings":
+        import sys
+        # 1. Clean and validate DATABASE_URL
+        url = self.DATABASE_URL.strip() if self.DATABASE_URL else ""
+        
+        # Log the raw input for debugging (mask the password for safety)
+        if url:
+             safe_log = url.split("@")[-1] if "@" in url else "invalid-url"
+             print(f"DEBUG: Detected DATABASE_URL ending in: ...@{safe_log}", file=sys.stderr)
+        else:
+             print("DEBUG: DATABASE_URL is EMPTY in Settings", file=sys.stderr)
 
-    @field_validator("SYNC_DATABASE_URL", mode="before")
-    @classmethod
-    def assemble_sync_db_url(cls, v: str, info) -> str:
-        if v and isinstance(v, str):
-            v = v.strip()
-            if v.startswith("postgres://"):
-                return v.replace("postgres://", "postgresql+psycopg2://", 1)
-            if v.startswith("postgresql://") and "+psycopg2" not in v:
-                return v.replace("postgresql://", "postgresql+psycopg2://", 1)
-            return v
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif url.startswith("postgresql://") and "+asyncpg" not in url:
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        
+        self.DATABASE_URL = url
+        
+        # 2. Derive SYNC_DATABASE_URL
+        if not self.SYNC_DATABASE_URL:
+            self.SYNC_DATABASE_URL = url.replace("asyncpg", "psycopg2") if url else ""
+        else:
+            sync_url = self.SYNC_DATABASE_URL.strip()
+            if sync_url.startswith("postgres://"):
+                sync_url = sync_url.replace("postgres://", "postgresql+psycopg2://", 1)
+            elif sync_url.startswith("postgresql://") and "+psycopg2" not in sync_url:
+                sync_url = sync_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+            self.SYNC_DATABASE_URL = sync_url
 
-        raw_db_url = info.data.get("DATABASE_URL", "")
-        if isinstance(raw_db_url, str) and raw_db_url:
-            raw_db_url = raw_db_url.strip()
-            if raw_db_url.startswith("postgres://"):
-                return raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
-            if raw_db_url.startswith("postgresql://"):
-                return raw_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
-        return v
+        if not self.DATABASE_URL:
+            print("ERROR: DATABASE_URL is missing after validation", file=sys.stderr)
+        
+        return self
 
     # Security
     SECRET_KEY: str
