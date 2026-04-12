@@ -19,8 +19,9 @@ import app.models  # noqa: F401 – triggers all model imports via models/__init
 # This is the Alembic Config object from alembic.ini
 config = context.config
 
-# Override the URL from alembic.ini with the one from .env
-config.set_main_option("sqlalchemy.url", settings.SYNC_DATABASE_URL)
+# Override the URL from alembic.ini with the one from .env if it exists
+if settings.SYNC_DATABASE_URL:
+    config.set_main_option("sqlalchemy.url", settings.SYNC_DATABASE_URL)
 
 # Interpret the config file for Python logging.
 if config.config_file_name is not None:
