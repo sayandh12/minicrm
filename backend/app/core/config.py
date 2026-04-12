@@ -13,15 +13,18 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = ""
+    DATABASE_PUBLIC_URL: str = ""  # Support for Railway public URL
     SYNC_DATABASE_URL: str = ""
 
     @model_validator(mode="after")
     def validate_database_urls(self) -> "Settings":
         import sys
-        # 1. Clean and validate DATABASE_URL
+        # 1. Initialize and prioritize DATABASE_PUBLIC_URL if DATABASE_URL is missing
         url = self.DATABASE_URL.strip() if self.DATABASE_URL else ""
-        
-        # Log the raw input for debugging (mask the password for safety)
+        if not url and self.DATABASE_PUBLIC_URL:
+            url = self.DATABASE_PUBLIC_URL.strip()
+
+        # 2. Clean and validate main URL
         if url:
              safe_log = url.split("@")[-1] if "@" in url else "invalid-url"
              print(f"DEBUG: Detected DATABASE_URL ending in: ...@{safe_log}", file=sys.stderr)
@@ -35,9 +38,12 @@ class Settings(BaseSettings):
         
         self.DATABASE_URL = url
         
-        # 2. Derive SYNC_DATABASE_URL
-        if not self.SYNC_DATABASE_URL:
-            self.SYNC_DATABASE_URL = url.replace("asyncpg", "psycopg2") if url else ""
+        # 3. Derive SYNC_DATABASE_URL
+        # If SYNC_DATABASE_URL matches the async one (after driver swap) OR if async one is remote but sync is localhost
+        derived_sync = url.replace("asyncpg", "psycopg2") if url else ""
+        
+        if not self.SYNC_DATABASE_URL or ("localhost" in self.SYNC_DATABASE_URL and "localhost" not in url):
+            self.SYNC_DATABASE_URL = derived_sync
         else:
             sync_url = self.SYNC_DATABASE_URL.strip()
             if sync_url.startswith("postgres://"):
@@ -78,7 +84,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        case_sensitive=True,
+        case_sensitive=False,
         extra="ignore"
     )
 
