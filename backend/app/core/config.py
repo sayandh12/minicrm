@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl, field_validator
+from pydantic import AnyHttpUrl, field_validator, model_validator
 from typing import List, Union
 import json
 
