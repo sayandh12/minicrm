@@ -78,8 +78,9 @@ class Settings(BaseSettings):
                 sync_url = sync_url.replace("postgresql://", "postgresql+psycopg2://", 1)
             self.SYNC_DATABASE_URL = sync_url
 
-        if not self.DATABASE_URL:
-            print("ERROR: DATABASE_URL is missing after validation", file=sys.stderr)
+        if not url:
+             print("ERROR: No database URL found in environment variables!", file=sys.stderr)
+             raise ValueError("CRITICAL ERROR: No database URL found! Please ensure your PostgreSQL service is LINKED to this service in your Railway project settings.")
         
         return self
 
