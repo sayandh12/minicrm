@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 from app.models.lead import LeadStatus, LeadSource
 
 
@@ -49,6 +49,7 @@ class LeadResponse(BaseModel):
     estimated_value: Optional[float]
     assigned_to_id: Optional[int]
     assigned_to_name: Optional[str] = None
+    created_at: datetime
 
     model_config = {"from_attributes": True}
 

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 from app.models.activity import ActivityType
 
 
@@ -32,6 +33,7 @@ class CustomerResponse(BaseModel):
     total_value: float
     notes: Optional[str]
     lead_id: Optional[int]
+    created_at: datetime
 
     model_config = {"from_attributes": True}
 
@@ -53,5 +55,6 @@ class ActivityResponse(BaseModel):
     customer_id: Optional[int]
     performed_by: Optional[int]
     performed_by_name: Optional[str] = None
+    created_at: datetime
 
     model_config = {"from_attributes": True}

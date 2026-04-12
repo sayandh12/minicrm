@@ -1,6 +1,6 @@
 from pydantic import BaseModel, model_validator
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 from app.models.leave import LeaveType, LeaveStatus
 
 
@@ -37,5 +37,6 @@ class LeaveResponse(BaseModel):
     employee_id: int
     employee_name: Optional[str] = None
     reviewed_by: Optional[int]
+    created_at: datetime
 
     model_config = {"from_attributes": True}

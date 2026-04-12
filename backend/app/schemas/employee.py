@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 from app.models.employee import EmploymentType, EmployeeStatus
 
 
@@ -42,5 +42,6 @@ class EmployeeResponse(BaseModel):
     user_id: int
     user_name: Optional[str] = None
     user_email: Optional[str] = None
+    created_at: datetime
 
     model_config = {"from_attributes": True}
