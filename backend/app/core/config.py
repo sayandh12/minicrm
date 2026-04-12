@@ -13,16 +13,37 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = ""
-    DATABASE_PUBLIC_URL: str = ""  # Support for Railway public URL
+    DATABASE_PUBLIC_URL: str = ""  
+    DATABASE_PRIVATE_URL: str = ""  # Often used by Railway internally
     SYNC_DATABASE_URL: str = ""
+
+    # Individual PG variables for construction
+    PGHOST: str = ""
+    PGPORT: str = "5432"
+    PGUSER: str = ""
+    PGPASSWORD: str = ""
+    PGDATABASE: str = ""
 
     @model_validator(mode="after")
     def validate_database_urls(self) -> "Settings":
         import sys
-        # 1. Initialize and prioritize DATABASE_PUBLIC_URL if DATABASE_URL is missing
+        # 1. Initialize and prioritize URL variables
         url = self.DATABASE_URL.strip() if self.DATABASE_URL else ""
+        
+        # Fallback sequence
+        if not url and self.DATABASE_PRIVATE_URL:
+            url = self.DATABASE_PRIVATE_URL.strip()
+            print("DEBUG: Using DATABASE_PRIVATE_URL", file=sys.stderr)
+        
         if not url and self.DATABASE_PUBLIC_URL:
             url = self.DATABASE_PUBLIC_URL.strip()
+            print("DEBUG: Using DATABASE_PUBLIC_URL", file=sys.stderr)
+
+        # 2. Try to construct from PG variables if still empty
+        if not url and self.PGHOST and self.PGUSER:
+             print(f"DEBUG: Constructing URL from PGHOST={self.PGHOST}, PGUSER={self.PGUSER}", file=sys.stderr)
+             # Default to postgresql format; we'll fix driver later
+             url = f"postgresql://{self.PGUSER}:{self.PGPASSWORD}@{self.PGHOST}:{self.PGPORT}/{self.PGDATABASE}"
 
         # 2. Clean and validate main URL
         if url:
