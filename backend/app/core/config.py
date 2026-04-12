@@ -18,30 +18,31 @@ class Settings(BaseSettings):
     @classmethod
     def assemble_db_url(cls, v: str) -> str:
         if isinstance(v, str):
-            # Railway provides postgres://, SQLAlchemy needs postgresql://
-            # And for async we need postgresql+asyncpg://
+            v = v.strip()
             if v.startswith("postgres://"):
                 return v.replace("postgres://", "postgresql+asyncpg://", 1)
-            if v.startswith("postgresql://"):
-                return v.replace("postgresql://", "postgresql+asyncpg://", 1)
-            if "asyncpg" not in v:
+            if v.startswith("postgresql://") and "+asyncpg" not in v:
                 return v.replace("postgresql://", "postgresql+asyncpg://", 1)
         return v
 
     @field_validator("SYNC_DATABASE_URL", mode="before")
     @classmethod
     def assemble_sync_db_url(cls, v: str, info) -> str:
-        if not v:
-            # Derive from DATABASE_URL if sync is missing
-            db_url = info.data.get("DATABASE_URL")
-            if db_url:
-                return db_url.replace("asyncpg", "psycopg2")
-        
-        # Ensure it has psycopg2 if it's already a postgres URL
-        if isinstance(v, str) and "postgresql" in v and "psycopg2" not in v:
-             if v.startswith("postgres://"):
+        if v and isinstance(v, str):
+            v = v.strip()
+            if v.startswith("postgres://"):
                 return v.replace("postgres://", "postgresql+psycopg2://", 1)
-             return v.replace("postgresql://", "postgresql+psycopg2://", 1)
+            if v.startswith("postgresql://") and "+psycopg2" not in v:
+                return v.replace("postgresql://", "postgresql+psycopg2://", 1)
+            return v
+
+        raw_db_url = info.data.get("DATABASE_URL", "")
+        if isinstance(raw_db_url, str) and raw_db_url:
+            raw_db_url = raw_db_url.strip()
+            if raw_db_url.startswith("postgres://"):
+                return raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+            if raw_db_url.startswith("postgresql://"):
+                return raw_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
         return v
 
     # Security
