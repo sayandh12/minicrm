@@ -48,7 +48,7 @@ export default function LeaveList() {
   const showMyOnly = !canManageHR()
 
   const { data, isLoading } = useQuery({
-    queryKey: ['leaves', page, filterStatus, tab],
+    queryKey: ['leaves', user?.id, page, filterStatus, tab],
     queryFn: () =>
       tab === 'my' || showMyOnly
         ? hrmApi.myLeaves()

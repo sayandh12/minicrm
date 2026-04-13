@@ -17,14 +17,14 @@ import Input, { Select } from '../../components/common/Input.jsx'
 
 export default function LeadList() {
   const navigate = useNavigate()
-  const { canManageLeads } = useAuthStore()
+  const { user, canManageLeads } = useAuthStore()
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [searchInput, setSearchInput] = useState('')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['leads', page, search, status],
+    queryKey: ['leads', user?.id, page, search, status],
     queryFn: () => leadsApi.list({ page, size: 20, search: search || undefined, status: status || undefined }),
   })
 

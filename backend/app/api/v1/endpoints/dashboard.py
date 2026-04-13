@@ -4,13 +4,14 @@ from sqlalchemy import select, func
 
 from app.db.session import get_db
 from app.core.dependencies import get_current_user
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.models.lead import Lead, LeadStatus
 from app.models.customer import Customer
 from app.models.employee import Employee
 from app.models.leave import LeaveRequest, LeaveStatus
 from app.crud.customer import crud_activity
 from app.crud.lead import crud_lead
+from app.crud.employee import crud_employee
 
 router = APIRouter()
 
@@ -20,31 +21,50 @@ async def dashboard_summary(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Lead counts by status
+    is_manager = current_user.role in (UserRole.ADMIN, UserRole.HR_EXECUTIVE)
+
+    # Lead counts by status (Filtered by role if needed)
     lead_counts = {}
     for s in LeadStatus:
-        result = await db.execute(select(func.count()).select_from(Lead).where(Lead.status == s))
+        query = select(func.count()).select_from(Lead).where(Lead.status == s)
+        if not is_manager:
+            query = query.where(Lead.assigned_to_id == current_user.id)
+        result = await db.execute(query)
         lead_counts[s.value] = result.scalar_one()
 
-    # Total customers
+    # Total customers (Managers see all, others see own?) 
+    # For now, let's keep customers global but leads filtered
     total_customers = (await db.execute(select(func.count()).select_from(Customer))).scalar_one()
 
-    # Total employees
-    total_employees = (await db.execute(select(func.count()).select_from(Employee))).scalar_one()
+    # Total employees (Only managers see total headcount)
+    total_employees = (await db.execute(select(func.count()).select_from(Employee))).scalar_one() if is_manager else 0
 
-    # Pending leaves
-    pending_leaves = (
-        await db.execute(
+    # Pending leaves (Managers see all, Employees see OWN)
+    pending_leaves = 0
+    if is_manager:
+        result = await db.execute(
             select(func.count()).select_from(LeaveRequest).where(LeaveRequest.status == LeaveStatus.PENDING)
         )
-    ).scalar_one()
+        pending_leaves = result.scalar_one()
+    else:
+        employee = await crud_employee.get_by_user_id(db, current_user.id)
+        if employee:
+            result = await db.execute(
+                select(func.count()).select_from(LeaveRequest).where(
+                    LeaveRequest.employee_id == employee.id,
+                    LeaveRequest.status == LeaveStatus.PENDING
+                )
+            )
+            pending_leaves = result.scalar_one()
 
-    # Total lead value in pipeline (not converted/lost)
-    pipeline_value_result = await db.execute(
-        select(func.coalesce(func.sum(Lead.estimated_value), 0)).where(
-            Lead.status.not_in([LeadStatus.CONVERTED, LeadStatus.LOST])
-        )
+    # Total lead value in pipeline (Role filtered)
+    val_query = select(func.coalesce(func.sum(Lead.estimated_value), 0)).where(
+        Lead.status.not_in([LeadStatus.CONVERTED, LeadStatus.LOST])
     )
+    if not is_manager:
+        val_query = val_query.where(Lead.assigned_to_id == current_user.id)
+        
+    pipeline_value_result = await db.execute(val_query)
     pipeline_value = float(pipeline_value_result.scalar_one())
 
     # Recent activities

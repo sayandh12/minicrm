@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { queryClient } from '../main.jsx'
 
 const useAuthStore = create(
   persist(
@@ -20,6 +21,7 @@ const useAuthStore = create(
 
       logout: () => {
         set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false })
+        queryClient.clear()
       },
 
       updateTokens: (access_token, refresh_token) => {

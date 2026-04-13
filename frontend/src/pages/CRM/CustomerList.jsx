@@ -10,15 +10,17 @@ import { Table, Th, Td, Tr } from '../../components/common/Table.jsx'
 import Pagination from '../../components/common/Pagination.jsx'
 import EmptyState from '../../components/common/EmptyState.jsx'
 import { PageSpinner } from '../../components/common/Spinner.jsx'
+import useAuthStore from '../../store/authStore.js'
 
 export default function CustomerList() {
   const navigate = useNavigate()
+  const { user } = useAuthStore()
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['customers', page, search],
+    queryKey: ['customers', user?.id, page, search],
     queryFn: () => crmApi.listCustomers({ page, size: 20, search: search || undefined }),
   })
 

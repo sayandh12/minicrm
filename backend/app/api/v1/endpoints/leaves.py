@@ -63,7 +63,7 @@ async def my_leave_history(
 ):
     employee = await crud_employee.get_by_user_id(db, current_user.id)
     if not employee:
-        raise HTTPException(status_code=404, detail="No employee profile found")
+        return []
     leaves = await crud_leave.get_by_employee(db, employee.id)
     result = []
     for l in leaves:

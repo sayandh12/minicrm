@@ -20,7 +20,7 @@ const STATUS_COLORS = {
 export default function Dashboard() {
   const { user } = useAuthStore()
   const { data, isLoading } = useQuery({
-    queryKey: ['dashboard'],
+    queryKey: ['dashboard', user?.id],
     queryFn: dashboardApi.getSummary,
     refetchInterval: 60000,
   })
