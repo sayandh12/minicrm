@@ -1,0 +1,78 @@
+@import './components/layout/styles.css';
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  /* Brand */
+  --accent:       #2563EB;
+  --accent-light: #EFF6FF;
+  --accent-dark:  #1D4ED8;
+
+  /* Surface */
+  --bg:           #F8F9FC;
+  --surface:      #FFFFFF;
+  --surface-2:    #F1F4F9;
+  --border:       #E2E8F0;
+  --border-strong:#CBD5E1;
+
+  /* Text */
+  --text-primary:   #0F172A;
+  --text-secondary: #475569;
+  --text-muted:     #94A3B8;
+
+  /* Status */
+  --success:      #10B981;
+  --success-bg:   #ECFDF5;
+  --warning:      #F59E0B;
+  --warning-bg:   #FFFBEB;
+  --danger:       #EF4444;
+  --danger-bg:    #FEF2F2;
+  --info:         #3B82F6;
+  --info-bg:      #EFF6FF;
+
+  /* Lead status colors */
+  --status-new:         #6366F1;
+  --status-contacted:   #F59E0B;
+  --status-qualified:   #3B82F6;
+  --status-proposal:    #8B5CF6;
+  --status-negotiation: #EC4899;
+  --status-converted:   #10B981;
+  --status-lost:        #94A3B8;
+
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:  0 10px 30px rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.05);
+
+  --sidebar-w:  240px;
+  --topbar-h:   60px;
+}
+
+html { font-size: 15px; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+
+/* Utility */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }

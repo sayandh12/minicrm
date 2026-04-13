@@ -36,18 +36,18 @@ services:
     volumes:
       - ./backend:/app
 
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#    container_name: minicrm_frontend
-#    restart: unless-stopped
-#    depends_on:
-#      - backend
-#    ports:
-#      - "3000:3000"
-#    environment:
-#      - VITE_API_URL=http://localhost:8000/api/v1
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=/api
+    container_name: minicrm_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3030:3000"
 
 volumes:
   postgres_data:
