@@ -1,0 +1,23 @@
+# Node/Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Python/Backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/.env
+backend/venv/
+backend/env/
+backend/.pytest_cache/
+backend/alembic/versions/*.pyc
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# OS files
+.DS_Store
+Thumbs.db
