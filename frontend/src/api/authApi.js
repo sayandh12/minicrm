@@ -9,6 +9,8 @@ export const authApi = {
 
   me: () => client.get('/auth/me').then((r) => r.data),
 
+  updateMe: (data) => client.patch('/auth/me', data).then((r) => r.data),
+
   createUser: (data) => client.post('/auth/users', data).then((r) => r.data),
 
   listUsers: () => client.get('/auth/users').then((r) => r.data),

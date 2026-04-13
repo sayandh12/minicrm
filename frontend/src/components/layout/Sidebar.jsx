@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Users, UserCheck, Building2,
   CalendarOff, Settings, LogOut, ChevronRight,
-  TrendingUp
+  TrendingUp, User
 } from 'lucide-react'
 import useAuthStore from '../../store/authStore.js'
 import { getInitials } from '../../utils/formatters.js'
@@ -15,6 +15,7 @@ const NAV = [
   { label: 'Employees',   path: '/employees',   icon: UserCheck,     roles: ['admin','hr_executive'] },
   { label: 'Leave Mgmt',  path: '/leaves',      icon: CalendarOff },
   { label: 'Users',       path: '/users',        icon: Settings,      roles: ['admin'] },
+  { label: 'Profile',     path: '/profile',      icon: User },
 ]
 
 export default function Sidebar({ onClose }) {

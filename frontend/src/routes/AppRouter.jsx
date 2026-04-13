@@ -12,6 +12,7 @@ import CustomerDetail from '../pages/CRM/CustomerDetail.jsx'
 import EmployeeList from '../pages/HRM/EmployeeList.jsx'
 import LeaveList from '../pages/HRM/LeaveList.jsx'
 import UserManagement from '../pages/Auth/UserManagement.jsx'
+import Profile from '../pages/Auth/Profile.jsx'
 
 export default function AppRouter() {
   return (
@@ -22,6 +23,9 @@ export default function AppRouter() {
         <Route element={<AppLayout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* User Profile */}
+          <Route path="/profile" element={<Profile />} />
 
           {/* Lead Management */}
           <Route path="/leads" element={<LeadList />} />
