@@ -255,16 +255,16 @@ pytest tests/ -v
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@minicrm.com | Admin@123456 |
+| Admin | admin@minicrm.com |
 
 Additional users can be created from the **Users** page after logging in as Admin. Suggested test users:
 
 | Role | Suggested Email |
 |------|----------------|
-| Sales Manager | manager@minicrm.com |
-| Sales Executive | sales@minicrm.com |
-| HR Executive | hr@minicrm.com |
-| Employee | emp@minicrm.com |
+| Sales Manager | jacob@gmail.com |
+| Sales Executive | david@gmail.com |
+| HR Executive | salt@gmail.com |
+| Employee | shine@gmail.com |
 
 ---
 
