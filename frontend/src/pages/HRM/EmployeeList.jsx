@@ -26,6 +26,7 @@ import { getErrorMessage } from '../../utils/errors.js'
 
 const schema = z.object({
   user_id: z.string().min(1, 'User is required'),
+  employee_code: z.string().min(2, 'Code must be at least 2 chars'),
   department: z.string().min(1, 'Department is required'),
   designation: z.string().min(1, 'Designation is required'),
   date_of_joining: z.string().min(1, 'Date required'),
@@ -179,6 +180,7 @@ export default function EmployeeList() {
                   <option key={u.id} value={u.id}>{u.full_name} ({u.email})</option>
                 ))}
               </Select>
+              <Input label="Employee Code" required error={errors.employee_code?.message} placeholder="e.g. EMP-001" {...register('employee_code')} />
               <Input label="Department" required error={errors.department?.message} {...register('department')} />
               <Input label="Designation" required error={errors.designation?.message} {...register('designation')} />
               <Input label="Date of Joining" type="date" required error={errors.date_of_joining?.message} {...register('date_of_joining')} />
