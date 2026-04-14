@@ -53,8 +53,8 @@ export default function EmployeeList() {
   })
 
   const { data: users = [] } = useQuery({
-    queryKey: ['users'],
-    queryFn: authApi.listUsers,
+    queryKey: ['users', 'unlinked'],
+    queryFn: () => authApi.listUsers({ unlinked_only: true }),
     enabled: showModal,
   })
 
@@ -72,6 +72,7 @@ export default function EmployeeList() {
     onSuccess: () => {
       toast.success('Employee created')
       qc.invalidateQueries({ queryKey: ['employees'] })
+      qc.invalidateQueries({ queryKey: ['users', 'unlinked'] })
       setShowModal(false)
       reset()
     },

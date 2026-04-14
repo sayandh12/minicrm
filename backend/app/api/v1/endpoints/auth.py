@@ -99,8 +99,18 @@ async def create_user(data: UserCreate, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/users", response_model=list[UserResponse], dependencies=[Depends(require_admin)])
-async def list_users(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User).order_by(User.created_at.desc()))
+async def list_users(
+    unlinked_only: bool = False,
+    db: AsyncSession = Depends(get_db)
+):
+    from app.models.employee import Employee
+    query = select(User).order_by(User.created_at.desc())
+    
+    if unlinked_only:
+        # Filter for users that do NOT have an entry in the employees table
+        query = query.outerjoin(Employee).where(Employee.id == None)
+        
+    result = await db.execute(query)
     return result.scalars().all()
 
 

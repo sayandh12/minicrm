@@ -24,8 +24,17 @@ async def create_employee(
     if existing:
         raise HTTPException(status_code=400, detail="Employee profile already exists for this user")
 
-    employee = await crud_employee.create(db, obj_in=data, created_by=current_user.id)
-    await db.commit()
+    from sqlalchemy.exc import IntegrityError
+    try:
+        employee = await crud_employee.create(db, obj_in=data, created_by=current_user.id)
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=400, 
+            detail="Employee code already exists or user is already linked to another profile"
+        )
+
     await db.refresh(employee, ["user"])
 
     resp = EmployeeResponse.model_validate(employee)
