@@ -28,6 +28,10 @@ const useAuthStore = create(
         set({ accessToken: access_token, refreshToken: refresh_token })
       },
 
+      setUser: (user) => {
+        set({ user })
+      },
+
       // Role helpers
       isAdmin: () => get().user?.role === 'admin',
       isSalesManager: () => get().user?.role === 'sales_manager',
