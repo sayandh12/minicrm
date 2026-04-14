@@ -73,7 +73,9 @@ export default function LeadForm() {
     mutationFn: (data) => {
       const payload = {
         ...data,
-        estimated_value: data.estimated_value ? parseFloat(data.estimated_value) : null,
+        estimated_value: (data.estimated_value !== '' && data.estimated_value !== null && data.estimated_value !== undefined) 
+          ? parseFloat(data.estimated_value) 
+          : null,
         assigned_to_id: data.assigned_to_id ? parseInt(data.assigned_to_id) : null,
         follow_up_date: data.follow_up_date || null,
         email: data.email || null,
@@ -83,6 +85,9 @@ export default function LeadForm() {
     onSuccess: (res) => {
       toast.success(isEdit ? 'Lead updated' : 'Lead created')
       qc.invalidateQueries({ queryKey: ['leads'] })
+      if (isEdit) {
+        qc.invalidateQueries({ queryKey: ['lead', id] })
+      }
       navigate(`/leads/${res.id || id}`)
     },
     onError: (e) => toast.error(getErrorMessage(e, 'Failed to save lead')),

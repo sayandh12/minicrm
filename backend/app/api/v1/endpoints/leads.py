@@ -127,7 +127,11 @@ async def update_lead(
 
     await db.commit()
     await db.refresh(lead, ["assigned_to"])
-    return LeadResponse.model_validate(lead)
+    
+    resp = LeadResponse.model_validate(lead)
+    if lead.assigned_to:
+        resp.assigned_to_name = lead.assigned_to.full_name
+    return resp
 
 
 @router.post("/{lead_id}/assign", response_model=LeadResponse)

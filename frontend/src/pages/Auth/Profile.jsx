@@ -148,12 +148,12 @@ export default function Profile() {
               </div>
               <div className="profile-info-item">
                 <Calendar size={20} color="var(--accent)" />
-                <div>
+                {/* <div>
                   <div style={{ fontWeight: 600, fontSize: 14 }}>Account Created</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>
                     {user?.created_at ? formatDate(user.created_at) : 'N/A'}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
