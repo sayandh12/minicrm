@@ -43,12 +43,14 @@ export default function EmployeeList() {
   const [page, setPage] = useState(1)
   const [showModal, setShowModal] = useState(false)
   const [filterStatus, setFilterStatus] = useState('')
+  const [filterType, setFilterType] = useState('')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['employees', page, filterStatus],
+    queryKey: ['employees', page, filterStatus, filterType],
     queryFn: () => hrmApi.listEmployees({
       page, size: 20,
       status: filterStatus || undefined,
+      employment_type: filterType || undefined,
     }),
   })
 
@@ -107,6 +109,18 @@ export default function EmployeeList() {
           <option value="">All statuses</option>
           {EMPLOYEE_STATUSES.map((s) => (
             <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+          ))}
+        </select>
+
+        <select
+          className="field-input"
+          value={filterType}
+          onChange={(e) => { setFilterType(e.target.value); setPage(1) }}
+          style={{ width: 'auto' }}
+        >
+          <option value="">All types</option>
+          {EMPLOYMENT_TYPES.map((t) => (
+            <option key={t} value={t}>{EMPLOYMENT_TYPE_LABELS[t]}</option>
           ))}
         </select>
       </div>

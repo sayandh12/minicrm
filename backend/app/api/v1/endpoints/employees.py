@@ -6,7 +6,7 @@ import math
 from app.db.session import get_db
 from app.core.dependencies import get_current_user, require_hr, require_admin
 from app.models.user import User
-from app.models.employee import EmployeeStatus
+from app.models.employee import EmployeeStatus, EmploymentType
 from app.crud.employee import crud_employee
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
 
@@ -50,13 +50,15 @@ async def list_employees(
     size: int = Query(20, ge=1, le=100),
     department: Optional[str] = None,
     status: Optional[EmployeeStatus] = None,
+    employment_type: Optional[EmploymentType] = None,
     search: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_hr),
 ):
     skip = (page - 1) * size
     employees, total = await crud_employee.get_multi_filtered(
-        db, skip=skip, limit=size, department=department, status=status, search=search
+        db, skip=skip, limit=size, department=department, status=status, 
+        employment_type=employment_type, search=search
     )
     items = []
     for emp in employees:

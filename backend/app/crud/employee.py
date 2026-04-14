@@ -4,7 +4,7 @@ from sqlalchemy import select, func, or_
 from sqlalchemy.orm import selectinload
 
 from app.crud.base import CRUDBase
-from app.models.employee import Employee, EmployeeStatus
+from app.models.employee import Employee, EmployeeStatus, EmploymentType
 from app.models.leave import LeaveRequest, LeaveStatus
 from app.models.user import User
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
@@ -37,6 +37,7 @@ class CRUDEmployee(CRUDBase[Employee, EmployeeCreate, EmployeeUpdate]):
         limit: int = 20,
         department: Optional[str] = None,
         status: Optional[EmployeeStatus] = None,
+        employment_type: Optional[EmploymentType] = None,
         search: Optional[str] = None,
     ) -> Tuple[List[Employee], int]:
         query = select(Employee).options(selectinload(Employee.user))
@@ -47,6 +48,8 @@ class CRUDEmployee(CRUDBase[Employee, EmployeeCreate, EmployeeUpdate]):
             filters.append(Employee.department == department)
         if status:
             filters.append(Employee.status == status)
+        if employment_type:
+            filters.append(Employee.employment_type == employment_type)
         if search:
             term = f"%{search}%"
             filters.append(
