@@ -23,7 +23,7 @@ export default function Login() {
     if (isAuthenticated) navigate('/dashboard', { replace: true })
   }, [isAuthenticated, navigate])
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
   })
 
@@ -33,7 +33,14 @@ export default function Login() {
       login(res)
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      toast.error(getErrorMessage(err, 'Login failed'))
+      const message = getErrorMessage(err, 'Login failed')
+      if (message.toLowerCase().includes('email')) {
+        setError('email', { type: 'manual', message })
+      } else if (message.toLowerCase().includes('password')) {
+        setError('password', { type: 'manual', message })
+      } else {
+        toast.error(message)
+      }
     }
   }
 
