@@ -106,10 +106,10 @@ export default function EmployeeList() {
           onChange={(e) => { setFilterStatus(e.target.value); setPage(1) }}
           style={{ width: 'auto' }}
         >
-          <option value="">All statuses</option>
+          {/* <option value="">All statuses</option>
           {EMPLOYEE_STATUSES.map((s) => (
-            <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
-          ))}
+            <option key={s} value={s}>{s.replace(/_/g, ' ')}</option> */}
+          {/* ))} */}
         </select>
 
         <select
