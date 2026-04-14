@@ -88,10 +88,10 @@ export default function Login() {
             </Button>
           </form>
 
-          <div style={styles.demoCreds}>
+          {/* <div style={styles.demoCreds}>
             <div style={styles.demoTitle}>Demo credentials</div>
             <div style={styles.demoRow}><span>Admin</span><code>admin@minicrm.com / Admin@123456</code></div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
