@@ -100,17 +100,17 @@ export default function EmployeeList() {
       />
 
       <div className="filter-bar">
-        <select
+        {/* <select
           className="field-input"
           value={filterStatus}
           onChange={(e) => { setFilterStatus(e.target.value); setPage(1) }}
           style={{ width: 'auto' }}
-        >
+        > */}
           {/* <option value="">All statuses</option>
           {EMPLOYEE_STATUSES.map((s) => (
             <option key={s} value={s}>{s.replace(/_/g, ' ')}</option> */}
           {/* ))} */}
-        </select>
+        {/* </select> */}
 
         <select
           className="field-input"
