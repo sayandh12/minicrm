@@ -251,22 +251,6 @@ pytest tests/ -v
 
 ---
 
-## Demo Credentials
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@minicrm.com |
-
-Additional users can be created from the **Users** page after logging in as Admin. Suggested test users:
-
-| Role | Suggested Email |
-|------|----------------|
-| Sales Manager | jacob@gmail.com |
-| Sales Executive | david@gmail.com |
-| HR Executive | salt@gmail.com |
-| Employee | shine@gmail.com |
-
----
 
 ## API Reference
 

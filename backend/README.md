@@ -65,11 +65,6 @@ pip install aiosqlite pytest-asyncio
 pytest tests/ -v
 ```
 
-## Default Admin Credentials
-```
-Email:    admin@minicrm.com
-Password: Admin@123456
-```
 
 ## API Endpoints Summary
 
